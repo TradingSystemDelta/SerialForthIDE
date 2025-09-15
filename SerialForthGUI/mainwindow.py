@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import time
 
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtWidgets import QPushButton, QTextEdit, QFileDialog
@@ -9,12 +10,19 @@ from PySide6.QtWidgets import QPushButton, QTextEdit, QFileDialog
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from SerialForthGUI.ui_form import Ui_MainWindow
+from forth_interpreter.gforth_subproccess import GforthProcess
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # Initialize the GForth Interpreter
+        self.gforth = GforthProcess()
+        time.sleep(0.5)  # Give it a moment to start up
+        self.ui.SerialMonitor.setPlainText(self.gforth.output)
+
 
         # Set up button click handlers
         self.ui.SendAll.clicked.connect(self.on_send_all_clicked)
