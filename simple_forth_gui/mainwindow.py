@@ -12,6 +12,8 @@ from PySide6.QtWidgets import QPushButton, QTextEdit, QFileDialog
 from SerialForthGUI.ui_form import Ui_MainWindow
 from forth_interpreter.gforth_subproccess import GforthProcess
 
+from program_text_editor.program_text_editor import ProgramTextEditor
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -30,8 +32,7 @@ class MainWindow(QMainWindow):
         self.ui.actionOpen.triggered.connect(self.open_file_dialog)
         self.ui.actionSave_As.triggered.connect(self.save_as_file_dialog)
 
-        self.ui.ProgramEditor.textChanged.connect(self.on_program_editor_text_changed)
-        self.ui.ProgramEditor.cursorPositionChanged.connect(self.on_program_editor_cursor_position_changed)
+        self.program_editor = ProgramTextEditor(self.ui.ProgramEditor)
 
     def save_as_file_dialog(self):
         file_path, _ = QFileDialog.getSaveFileName(self, "Save File As", "", "All Files (*)")
@@ -52,24 +53,17 @@ class MainWindow(QMainWindow):
         column = cursor.columnNumber() + 1  # columnNumber is zero-based
         print(f"Cursor moved to line {line}, column {column}")
         raise NotImplementedError("Cursor position change handling is not implemented yet.")
-
-    
-    def on_program_editor_text_changed(self):
-        text_edit = self.ui.ProgramEditor
-        text = text_edit.toPlainText()
-        print(f"Program Editor text changed. New text: {text}")
-        raise NotImplementedError("Program Editor text change handling is not implemented yet.")
-
     
     def on_send_line_clicked(self):
         line_text = self.ui.lineEdit.text()
+        self.ui.SerialMonitor.append(line_text)
         print(f"Send LINE clicked. Line: {line_text}")
         raise NotImplementedError("Send LINE functionality is not implemented yet.")
 
     def on_send_all_clicked(self):
-        text_edit = self.ui.ProgramEditor
-        text = text_edit.toPlainText()
+        text = self.program_editor.program_text
         print(f"Send ALL clicked. Text: {text}")
+        self.ui.SerialMonitor.setPlainText(text)
         raise NotImplementedError("Send ALL functionality is not implemented yet.")
 
 if __name__ == "__main__":

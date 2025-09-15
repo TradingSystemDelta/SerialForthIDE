@@ -1,5 +1,5 @@
 [project]
-name = "SimpleForthGUI"
+name = "simple_forth_gui"
 
 [tool.pyside6-project]
 files = ["mainwindow.py", "form.ui"]
